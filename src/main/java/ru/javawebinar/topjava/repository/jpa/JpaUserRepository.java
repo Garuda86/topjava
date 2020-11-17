@@ -27,6 +27,7 @@ public class JpaUserRepository implements UserRepository {
     private EntityManager em;
 
     @Override
+    @Transactional
     public User save(User user) {
         if (user.isNew()) {
             em.persist(user);
@@ -37,7 +38,6 @@ public class JpaUserRepository implements UserRepository {
     }
 
     @Override
-    @Transactional
     public User get(int id) {
         return em.find(User.class, id);
     }
