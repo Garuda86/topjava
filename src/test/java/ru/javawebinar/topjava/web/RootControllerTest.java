@@ -2,14 +2,16 @@ package ru.javawebinar.topjava.web;
 
 import org.assertj.core.matcher.AssertionMatcher;
 import org.junit.jupiter.api.Test;
-import ru.javawebinar.topjava.model.User;
+import ru.javawebinar.topjava.model.*;
 
 import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static ru.javawebinar.topjava.MealTestData.*;
 import static ru.javawebinar.topjava.UserTestData.*;
+import static ru.javawebinar.topjava.util.MealsUtil.getTos;
 
 class RootControllerTest extends AbstractControllerTest {
 
@@ -27,6 +29,23 @@ class RootControllerTest extends AbstractControllerTest {
                                 USER_MATCHER.assertMatch(actual, admin, user);
                             }
                         }
+                ));
+    }
+
+    @Test
+    void getMeals() throws Exception {
+        perform(get("/meals"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(view().name("meals"))
+                .andExpect(forwardedUrl("/WEB-INF/jsp/meals.jsp"))
+                .andExpect(model().attribute("meals", getTos(meals, SecurityUtil.authUserCaloriesPerDay())
+                        /*new AssertionMatcher<List<Meal>>() {
+                            @Override
+                            public void assertion(List<Meal> actual) throws AssertionError {
+                                MEAL_MATCHER.assertMatch(actual, meal1, meal2, meal3, meal4, meal5, meal6, meal7);
+                            }
+                        }*/
                 ));
     }
 }
